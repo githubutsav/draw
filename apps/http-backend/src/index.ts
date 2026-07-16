@@ -17,8 +17,7 @@ app.post("/signup", async (req, res) => {
     if (!parsedData.success) {
         return res.status(400).json({
             message: "Incorrect inputs"
-        })
-
+        });
     }
     try {
         const user = await prismaClient.user.create({
