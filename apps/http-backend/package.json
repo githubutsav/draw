@@ -8,9 +8,11 @@
     "dev": "npm run build && npm run start"
   },
   "dependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@types/express": "^5.0.6",
     "express": "^5.2.1"
+  },
+  "devDependencies":{
+    "@repo/typescript-config": "workspace:*",
+    "@types/ws": "^8.18.1"
   },
   "keywords": [],
   "author": "",
