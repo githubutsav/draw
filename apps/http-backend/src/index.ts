@@ -10,6 +10,7 @@ type AuthRequest = Request & {
 };
 
 const app = express();
+app.use(express.json());
 
 app.post("/signup", async (req, res) => {
     const parsedData = createUserSchema.safeParse(req.body);
