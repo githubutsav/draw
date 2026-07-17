@@ -1,1 +1,1 @@
-fontend not build but it the base of any chat application , something like exclidraw , and still need improvements like refactor,better structure , queues , and little data structure to make it faster 
+fontend not build but it the base of any chat application , for something like exclidraw , and still need improvements like refactor,better structure , queues , and little data structure to make it faster 
