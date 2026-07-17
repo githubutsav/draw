@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import { middleware } from "./middleware";
 import { createUserSchema, signinSchema, createRoomSchema } from "@repo/common/types";
-import { prismaClient } from "@repo/db/client"
+import { prismaClient } from "@repo/db/client";
+
 
 type AuthRequest = Request & {
     userId?: string;
@@ -19,11 +21,14 @@ app.post("/signup", async (req, res) => {
             message: "Incorrect inputs"
         });
     }
+    //Hash the password using bcrypt
+    const hashedPassword = await bcrypt.hash(parsedData.data.password,10);
+    
     try {
         const user = await prismaClient.user.create({
             data: {
                 email: parsedData.data.email,
-                password: parsedData.data.password,
+                password: hashedPassword,
                 name: parsedData.data.name,
             },
         });
@@ -50,12 +55,18 @@ app.post("/signin", async (req, res) => {
     const user = await prismaClient.user.findFirst({
         where: {
             email: parsedData.data.email,
-            password: parsedData.data.password,
         },
     });
     if (!user) {
         return res.status(403).json({
             message: "user not found"
+        });
+    }
+    // Compare the plain text password with the hashed password from the database
+    const passwordMatch = await bcrypt.compare(parsedData.data.password,user.password);
+    if(!passwordMatch){
+        return res.status(403).json({
+            message:"invalid password"
         });
     }
     const token = jwt.sign({
@@ -92,4 +103,6 @@ app.post("/room", middleware, async (req: AuthRequest, res: Response) => {
 
 });
 
-app.listen(3001);
+app.listen(3001, () => {
+    console.log("HTTP backend server is running on port 3001");
+});
